@@ -2,7 +2,16 @@ name: Build Watchface
 
 on:
   push:
+    paths:
+      - 'watchfaces/**'
+      - '.github/workflows/build.yml'
   workflow_dispatch:
+    inputs:
+      project:
+        description: '要编译的表盘'
+        required: true
+        type: choice
+        options: []
 
 jobs:
   build:
@@ -12,18 +21,44 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Compile watchfaces
+      - name: Set project list
+        id: projects
+        shell: pwsh
+        run: |
+          $dirs = Get-ChildItem watchfaces -Directory | ForEach-Object { $_.Name }
+          $list = ($dirs -join ',')
+          echo "dirs=$list" >> $env:GITHUB_OUTPUT
+          $json = ($dirs | ConvertTo-Json -Compress)
+          echo "json=$json" >> $env:GITHUB_OUTPUT
+
+      - name: Compile
         shell: cmd
         run: |
           if not exist output mkdir output
-          for /r %%f in (*.fprj) do (
-            echo Building: %%f
-            compiler\compile.exe -b "%%f" output "%%~nf.face" 1461256429
-            echo Exit code: %ERRORLEVEL%
-            dir output
-          )
 
-      - name: Upload watchfaces
+          REM 手动触发时用指定项目，否则编译全部
+          set "TARGET=${{ github.event.inputs.project }}"
+          if "%TARGET%"=="" (
+            for /d %%d in (watchfaces\*) do call :build %%d
+          ) else (
+            call :build watchfaces\%TARGET%
+          )
+          goto :end
+
+          :build
+          for /r "%1" %%f in (*.fprj) do (
+            echo Building: %%f
+            pushd "%%~dpf"
+            "%GITHUB_WORKSPACE%\compiler\compile.exe" -b "%%~nxf" "%GITHUB_WORKSPACE%\output" "%%~nf.face" 1461256429
+            echo Exit code: %ERRORLEVEL%
+            popd
+          )
+          exit /b
+
+          :end
+          dir output
+
+      - name: Upload
         uses: actions/upload-artifact@v4
         with:
           name: watchfaces
