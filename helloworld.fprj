@@ -1,12 +1,12 @@
-<?xml version="1.0" ?>
+<?xml version='1.0' encoding='UTF-8'?>
 <FaceProject DeviceType="367" Id="">
-	<Screen Title="" Bitmap="">
-		<Widget Shape="30" Name="widget-4" Bitmap="bg_336x480_v3.png" X="-1" Y="-10" Width="48" Height="48" Alpha="255" Visible_Src="0"/>
-		<Widget Shape="30" Name="widget-3" Bitmap="bg_212x520.png" X="-266" Y="0" Width="48" Height="48" Alpha="255" Visible_Src="0"/>
-		<Widget Shape="32" Name="widget-0 - Copy1 - Copy1 - Copy2 - Copy1" BitmapList="0.png|1.png|1.png|3.png|4.png|5.png|6.png|7.png|8.png|9.png" X="206" Y="116" Width="48" Height="48" Alpha="255" Visible_Src="0" Digits="2" Alignment="0" Value_Src="1011" Spacing="0" Blanking="0"/>
-		<Widget Shape="32" Name="widget-0 - Copy1 - Copy3 - Copy1 - Copy1" BitmapList="0.png|1.png|2.png|3.png|4.png|5.png|6.png|7.png|8.png|9.png" X="146" Y="116" Width="48" Height="48" Alpha="255" Visible_Src="0" Digits="2" Alignment="0" Value_Src="811" Spacing="1" Blanking="0"/>
-		<Widget Shape="32" Name="widget-0 - Copy1 - Copy1 - Copy1 - Copy1 - Copy1 - Copy1" BitmapList="0.png|1.png|2.png|3.png|4.png|5.png|6.png|7.png|8.png|9.png" X="263" Y="116" Width="48" Height="48" Alpha="255" Visible_Src="0" Digits="2" Alignment="0" Value_Src="1811" Spacing="4" Blanking="0"/>
-		<Widget Shape="32" Name="widget-0 - Copy1 - Copy3 - Copy1 - Copy1 - Copy1" BitmapList="0.png|1.png|2.png|3.png|4.png|5.png|6.png|7.png|8.png|9.png" X="146" Y="116" Width="48" Height="48" Alpha="255" Visible_Src="0" Digits="2" Alignment="0" Value_Src="811" Spacing="1" Blanking="0"/>
-		<Widget Shape="32" Name="widget-0 - Copy1 - Copy1 - Copy1 - Copy1 - Copy1 - Copy1 - Copy1" BitmapList="0.png|1.png|2.png|3.png|4.png|5.png|6.png|7.png|8.png|9.png" X="263" Y="116" Width="48" Height="48" Alpha="255" Visible_Src="0" Digits="2" Alignment="0" Value_Src="1811" Spacing="4" Blanking="0"/>
+	<Screen Title="" Bitmap="bg_336x480_v3.png">
+		<Widget Shape="30" Name="widget-4" Bitmap="bg_336x480_v3.png" X="-1" Y="-10" Width="48" Height="48" Alpha="255" Visible_Src="0" />
+		<Widget Shape="30" Name="widget-3" Bitmap="bg_212x520.png" X="-266" Y="0" Width="48" Height="48" Alpha="255" Visible_Src="0" />
+		<Widget Shape="32" Name="widget-0 - Copy1 - Copy1 - Copy2 - Copy1" BitmapList="0.png|1.png|1.png|3.png|4.png|5.png|6.png|7.png|8.png|9.png" X="206" Y="116" Width="48" Height="48" Alpha="255" Visible_Src="0" Digits="2" Alignment="0" Value_Src="1011" Spacing="0" Blanking="0" />
+		<Widget Shape="32" Name="widget-0 - Copy1 - Copy3 - Copy1 - Copy1" BitmapList="0.png|1.png|2.png|3.png|4.png|5.png|6.png|7.png|8.png|9.png" X="146" Y="116" Width="48" Height="48" Alpha="255" Visible_Src="0" Digits="2" Alignment="0" Value_Src="811" Spacing="1" Blanking="0" />
+		<Widget Shape="32" Name="widget-0 - Copy1 - Copy1 - Copy1 - Copy1 - Copy1 - Copy1" BitmapList="0.png|1.png|2.png|3.png|4.png|5.png|6.png|7.png|8.png|9.png" X="263" Y="116" Width="48" Height="48" Alpha="255" Visible_Src="0" Digits="2" Alignment="0" Value_Src="1811" Spacing="4" Blanking="0" />
+		<Widget Shape="32" Name="widget-0 - Copy1 - Copy3 - Copy1 - Copy1 - Copy1" BitmapList="0.png|1.png|2.png|3.png|4.png|5.png|6.png|7.png|8.png|9.png" X="146" Y="116" Width="48" Height="48" Alpha="255" Visible_Src="0" Digits="2" Alignment="0" Value_Src="811" Spacing="1" Blanking="0" />
+		<Widget Shape="32" Name="widget-0 - Copy1 - Copy1 - Copy1 - Copy1 - Copy1 - Copy1 - Copy1" BitmapList="0.png|1.png|2.png|3.png|4.png|5.png|6.png|7.png|8.png|9.png" X="263" Y="116" Width="48" Height="48" Alpha="255" Visible_Src="0" Digits="2" Alignment="0" Value_Src="1811" Spacing="4" Blanking="0" />
 	</Screen>
 </FaceProject>
