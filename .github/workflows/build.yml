@@ -1,0 +1,45 @@
+name: Build Watchface
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Compile watchfaces
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path output
+
+          $fprjFiles = Get-ChildItem -Path . -Filter "*.fprj" -Recurse | Where-Object { $_.FullName -notmatch '\\output\\' }
+
+          if ($fprjFiles.Count -eq 0) {
+            Write-Host "ERROR: No .fprj files found!"
+            exit 1
+          }
+
+          Write-Host "Found $($fprjFiles.Count) project(s)"
+
+          foreach ($file in $fprjFiles) {
+            $projectName = [System.IO.Path]::GetFileNameWithoutExtension($file.Name)
+            Write-Host "Building: $projectName from $($file.FullName)"
+            & .\compiler\compile.exe -b "$($file.FullName)" "output" "$projectName.face" "1461256429"
+            if ($LASTEXITCODE -ne 0) {
+              Write-Host "WARNING: Compile exited with code $LASTEXITCODE"
+            }
+          }
+
+          Get-ChildItem -Path output | ForEach-Object { Write-Host "  $($_.Name)" }
+
+      - name: Upload watchfaces
+        uses: actions/upload-artifact@v4
+        with:
+          name: watchfaces
+          path: output/*.face
+          if-no-files-found: error
