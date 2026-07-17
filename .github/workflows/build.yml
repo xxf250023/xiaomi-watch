@@ -9,9 +9,8 @@ on:
     inputs:
       project:
         description: '要编译的表盘'
-        required: true
-        type: choice
-        options: []
+        required: false
+        type: string
 
 jobs:
   build:
@@ -21,41 +20,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set project list
-        id: projects
-        shell: pwsh
-        run: |
-          $dirs = Get-ChildItem watchfaces -Directory | ForEach-Object { $_.Name }
-          $list = ($dirs -join ',')
-          echo "dirs=$list" >> $env:GITHUB_OUTPUT
-          $json = ($dirs | ConvertTo-Json -Compress)
-          echo "json=$json" >> $env:GITHUB_OUTPUT
-
       - name: Compile
         shell: cmd
         run: |
           if not exist output mkdir output
 
-          REM 手动触发时用指定项目，否则编译全部
           set "TARGET=${{ github.event.inputs.project }}"
-          if "%TARGET%"=="" (
-            for /d %%d in (watchfaces\*) do call :build %%d
+          if not "%TARGET%"=="" (
+            for /r "watchfaces\%TARGET%" %%f in (*.fprj) do (
+              echo Building: %%f
+              compiler\compile.exe -b "%%f" output "%%~nf.face" 1461256429
+            )
           ) else (
-            call :build watchfaces\%TARGET%
+            for /r watchfaces %%f in (*.fprj) do (
+              echo Building: %%f
+              compiler\compile.exe -b "%%f" output "%%~nf.face" 1461256429
+            )
           )
-          goto :end
-
-          :build
-          for /r "%1" %%f in (*.fprj) do (
-            echo Building: %%f
-            pushd "%%~dpf"
-            "%GITHUB_WORKSPACE%\compiler\compile.exe" -b "%%~nxf" "%GITHUB_WORKSPACE%\output" "%%~nf.face" 1461256429
-            echo Exit code: %ERRORLEVEL%
-            popd
-          )
-          exit /b
-
-          :end
           dir output
 
       - name: Upload
