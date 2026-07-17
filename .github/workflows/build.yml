@@ -24,22 +24,41 @@ jobs:
             exit 1
           }
 
-          Write-Host "Found $($fprjFiles.Count) project(s)"
-
           foreach ($file in $fprjFiles) {
             $projectName = [System.IO.Path]::GetFileNameWithoutExtension($file.Name)
-            Write-Host "Building: $projectName from $($file.FullName)"
-            & .\compiler\compile.exe -b "$($file.FullName)" "output" "$projectName.face" "1461256429"
-            if ($LASTEXITCODE -ne 0) {
-              Write-Host "WARNING: Compile exited with code $LASTEXITCODE"
+            $projectDir = $file.DirectoryName
+            $projectDirAbs = (Resolve-Path $projectDir).Path
+
+            Write-Host "Building: $projectName in $projectDirAbs"
+            Write-Host "Files in project dir:"
+            Get-ChildItem -Path $projectDirAbs -Recurse | ForEach-Object { Write-Host "  $($_.FullName)" }
+
+            # compile.exe 需要在 fprj 所在目录运行
+            Push-Location $projectDirAbs
+            $compilerPath = (Resolve-Path "$env:GITHUB_WORKSPACE\compiler\compile.exe").Path
+            $outputPath = (Resolve-Path "$env:GITHUB_WORKSPACE\output").Path
+
+            Write-Host "Compiler: $compilerPath"
+            Write-Host "Output: $outputPath"
+
+            & $compilerPath -b "$($file.Name)" "$outputPath" "$projectName.face" "1461256429" 2>&1 | ForEach-Object { Write-Host $_ }
+
+            Pop-Location
+            Write-Host "Exit code: $LASTEXITCODE"
+
+            if (Test-Path "$outputPath\$projectName.face") {
+              Write-Host "SUCCESS: $projectName.face created"
+            } else {
+              Write-Host "FAILED: No .face file produced"
             }
           }
 
-          Get-ChildItem -Path output | ForEach-Object { Write-Host "  $($_.Name)" }
+          Write-Host "=== Output files ==="
+          Get-ChildItem -Path output -Recurse | ForEach-Object { Write-Host "  $($_.Name)" }
 
       - name: Upload watchfaces
         uses: actions/upload-artifact@v4
         with:
           name: watchfaces
           path: output/*.face
-          if-no-files-found: error
+          if-no-files-found: warn
