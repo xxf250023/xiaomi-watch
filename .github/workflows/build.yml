@@ -13,48 +13,15 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Compile watchfaces
-        shell: pwsh
+        shell: cmd
         run: |
-          New-Item -ItemType Directory -Force -Path output
-
-          $fprjFiles = Get-ChildItem -Path . -Filter "*.fprj" -Recurse | Where-Object { $_.FullName -notmatch '\\output\\' }
-
-          if ($fprjFiles.Count -eq 0) {
-            Write-Host "ERROR: No .fprj files found!"
-            exit 1
-          }
-
-          foreach ($file in $fprjFiles) {
-            $projectName = [System.IO.Path]::GetFileNameWithoutExtension($file.Name)
-            $projectDir = $file.DirectoryName
-            $projectDirAbs = (Resolve-Path $projectDir).Path
-
-            Write-Host "Building: $projectName in $projectDirAbs"
-            Write-Host "Files in project dir:"
-            Get-ChildItem -Path $projectDirAbs -Recurse | ForEach-Object { Write-Host "  $($_.FullName)" }
-
-            # compile.exe 需要在 fprj 所在目录运行
-            Push-Location $projectDirAbs
-            $compilerPath = (Resolve-Path "$env:GITHUB_WORKSPACE\compiler\compile.exe").Path
-            $outputPath = (Resolve-Path "$env:GITHUB_WORKSPACE\output").Path
-
-            Write-Host "Compiler: $compilerPath"
-            Write-Host "Output: $outputPath"
-
-            & $compilerPath -b "$($file.Name)" "$outputPath" "$projectName.face" "1461256429" 2>&1 | ForEach-Object { Write-Host $_ }
-
-            Pop-Location
-            Write-Host "Exit code: $LASTEXITCODE"
-
-            if (Test-Path "$outputPath\$projectName.face") {
-              Write-Host "SUCCESS: $projectName.face created"
-            } else {
-              Write-Host "FAILED: No .face file produced"
-            }
-          }
-
-          Write-Host "=== Output files ==="
-          Get-ChildItem -Path output -Recurse | ForEach-Object { Write-Host "  $($_.Name)" }
+          if not exist output mkdir output
+          for /r %%f in (*.fprj) do (
+            echo Building: %%f
+            compiler\compile.exe -b "%%f" output "%%~nf.face" 1461256429
+            echo Exit code: %ERRORLEVEL%
+            dir output
+          )
 
       - name: Upload watchfaces
         uses: actions/upload-artifact@v4
